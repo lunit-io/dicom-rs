@@ -13,9 +13,10 @@ use crate::{meta::FileMetaTable, FileMetaTableBuilder};
 use crate::{
     BuildMetaTableSnafu, CreateParserSnafu, CreatePrinterSnafu, DicomObject, FileDicomObject,
     MissingElementValueSnafu, NoSuchAttributeNameSnafu, NoSuchDataElementAliasSnafu,
-    NoSuchDataElementTagSnafu, OpenFileSnafu, ParseMetaDataSetSnafu, ParseSopAttributeSnafu, PrematureEndSnafu,
-    PrepareMetaTableSnafu, PrintDataSetSnafu, ReadFileSnafu, ReadPreambleBytesSnafu,
-    ReadTokenSnafu, Result, UnexpectedTokenSnafu, UnsupportedTransferSyntaxSnafu,
+    NoSuchDataElementTagSnafu, OpenFileSnafu, ParseMetaDataSetSnafu, ParseSopAttributeSnafu,
+    PrematureEndSnafu, PrepareMetaTableSnafu, PrintDataSetSnafu, ReadFileSnafu,
+    ReadPreambleBytesSnafu, ReadTokenSnafu, Result, UnexpectedTokenSnafu,
+    UnsupportedTransferSyntaxSnafu,
 };
 use dicom_core::dictionary::{DataDictionary, DictionaryEntry};
 use dicom_core::header::{HasLength, Header};
@@ -263,7 +264,10 @@ where
 
         // read rest of data according to metadata, feed it to object
         if let Some(ts) = ts_index.get(&meta.transfer_syntax) {
-            let mut dataset = DataSetReader::new_with_ts(file, ts).context(CreateParserSnafu)?;
+            let cs = SpecificCharacterSet::Default;
+            let mut dataset =
+                DataSetReader::new_with_ts_cs(file, ts, cs).context(CreateParserSnafu)?;
+
             let obj = InMemDicomObject::build_object(
                 &mut dataset,
                 dict,
@@ -274,7 +278,7 @@ where
 
             // if Media Storage SOP Class UID is empty attempt to infer from SOP Class UID
             if meta.media_storage_sop_class_uid().is_empty() {
-                if let Some(elem) = obj.get(tags::SOP_CLASS_UID) {
+                if let Ok(elem) = obj.element(tags::SOP_CLASS_UID) {
                     meta.media_storage_sop_class_uid = elem
                         .value()
                         .to_str()
@@ -285,7 +289,7 @@ where
 
             // if Media Storage SOP Instance UID is empty attempt to infer from SOP Instance UID
             if meta.media_storage_sop_instance_uid().is_empty() {
-                if let Some(elem) = obj.get(tags::SOP_INSTANCE_UID) {
+                if let Ok(elem) = obj.element(tags::SOP_INSTANCE_UID) {
                     meta.media_storage_sop_instance_uid = elem
                         .value()
                         .to_str()

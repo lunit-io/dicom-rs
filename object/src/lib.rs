@@ -205,8 +205,8 @@ pub enum Error {
     },
     #[snafu(display("Could not parse sop attribute"))]
     ParseSopAttribute {
-        #[snafu(source(from(dicom_core::value::ConvertValueError, Box::from)))]
-        source: Box<dicom_core::value::ConvertValueError>,
+        #[snafu(source(from(dicom_core::value::CastValueError, Box::from)))]
+        source: Box<dicom_core::value::CastValueError>,
         backtrace: Backtrace,
     },
     #[snafu(display("Could not create data set parser"))]

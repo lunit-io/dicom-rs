@@ -14,7 +14,7 @@ readme = "README.md"
 clap = { version = "=3.2.21", features = ["derive"] }
 dicom-core = { path = '../core', version = "0.5.3" }
 dicom-ul = { path = '../ul', version = "0.4.4" }
-dicom-object = { path = '../object', version = "0.5.4" }
+dicom-object = { path = '../object', version = "0.5.4-cxr4" }
 dicom-encoding = { path = "../encoding/", version = "0.5.3" }
 dicom-dictionary-std = { path = "../dictionary-std/", version = "0.5.0" }
 dicom-transfer-syntax-registry = { path = "../transfer-syntax-registry/", version = "0.5.1" }

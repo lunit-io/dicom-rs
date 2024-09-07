@@ -14,7 +14,7 @@ readme = "README.md"
 default = ['dicom-object/inventory-registry', 'dicom-object/backtraces']
 
 [dependencies]
-dicom-object = { path = "../object/", version = "0.5.4" }
+dicom-object = { path = "../object/", version = "0.5.4-cxr4" }
 dicom-pixeldata = { path = "../pixeldata/", version = "0.1.5" }
 snafu = "0.7.3"
 structopt = "0.3.23"
